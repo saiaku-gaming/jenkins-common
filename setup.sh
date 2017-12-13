@@ -37,6 +37,9 @@ pip install --upgrade pip
 #install awscli for gamelift uploads
 su - $JENKINS_USER "pip install awscli --upgrade --user"
 
+mkdir downloaded-builds
+chown $JENKINS_USER:$JENKINS_USER downloaded-builds
+
 #install steamworks sdk for steam uploads
 cd ..
 

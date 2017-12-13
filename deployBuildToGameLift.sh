@@ -4,10 +4,10 @@ set -e
 
 cd /home/valhalla
 
-rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer ./LinuxServer
+rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer ./downloaded-builds/LinuxServer
 
 echo "Uploading build..."
-OUTPUT="$(aws gamelift upload-build --name "$1 Build" --build-version $1 --build-root ./LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
+OUTPUT="$(aws gamelift upload-build --name "$1 Build" --build-version $1 --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
 BUILD_ID="$(echo $OUTPUT | tail -n 1 | sed 's/^.*Build ID: //')"
 echo "Build uploaded with id: $BUILD_ID"
 COUNT=0
