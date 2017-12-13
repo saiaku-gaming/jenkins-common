@@ -26,6 +26,9 @@ if [ -z $JENKINS_USER ]; then
 	exit 1
 fi
 
+useradd -md /home/valhalla valhalla
+chmod g+w /home/valhalla
+
 #install dependencies
 apt-get install -y openjdk-8-jdk maven python-pip build-essentail steamcmd
 
