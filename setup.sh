@@ -30,7 +30,7 @@ useradd -md /home/valhalla valhalla
 chmod g+w /home/valhalla
 
 #install dependencies
-apt-get install -y openjdk-8-jdk maven python-pip build-essentail steamcmd
+apt-get install -y openjdk-8-jdk maven python-pip build-essentail steamcmd jq
 
 pip install --upgrade pip
 
