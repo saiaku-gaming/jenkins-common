@@ -1,6 +1,9 @@
 #!/bin/sh
 
 BUILD_VERSION=$1
+STEAM_USER=$2
+STEAM_PASSWORD=$3
+
 BUILDER_DIR="/home/valhalla/steamworks_sdk/sdk/tools/ContentBuilder"
 
 rm -rf "$BUILDER_DIR/content/windows_content"
