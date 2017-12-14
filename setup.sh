@@ -77,4 +77,8 @@ sdk/tools/ContentBuilder/builder_linux/steamcmd.sh +quit
 cd ..
 chown -R valhalla:valhalla $VALHALLA_HOME
 
-echo "Done"
+echo "Almost done there are some things you have to do by hand :("
+echo ""
+echo "First add the settings.xml file to .m2 in jenkins home to get access to the repo"
+echo "Second login with jenkins to docker so that he can push shit to docker"
+
