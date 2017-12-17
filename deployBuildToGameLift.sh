@@ -21,6 +21,6 @@ while [ "$READY" != "READY" ] && [ $COUNT -ne 60 ]; do
 done
 
 echo "Creating fleet..."
-/home/jenkins/.local/bin/aws gamelift create-fleet --name "$2 Fleet" --build-id "$BUILD_ID" --ec2-instance-type "c4.large" --ec2-inbound-permissions '[{"FromPort": 7777,"ToPort": 7777,"IpRange": "0.0.0.0/0","Protocol": "UDP"},{"FromPort": 8990,"ToPort": 8990,"IpRange": "0.0.0.0/0","Protocol": "TCP"}]' --runtime-configuration '{"ServerProcesses": [{"LaunchPath": "/local/game/valhalla/Binaries/Linux/valhallaServer", "Parameters": "-Log -GameLift", "ConcurrentExecutions": 1}], "MaxConcurrentGameSessionActivations": 10, "GameSessionActivationTimeoutSeconds": 300}'
+/home/jenkins/.local/bin/aws gamelift create-fleet --name "$2 Fleet" --build-id "$BUILD_ID" --ec2-instance-type "c4.large" --ec2-inbound-permissions '[{"FromPort": 7777,"ToPort": 7777,"IpRange": "0.0.0.0/0","Protocol": "UDP"},{"FromPort": 8990,"ToPort": 8990,"IpRange": "0.0.0.0/0","Protocol": "TCP"}]' --runtime-configuration '{"ServerProcesses": [{"LaunchPath": "/local/game/valhalla/Binaries/Linux/valhallaServer", "Parameters": "-Log -GameLift", "ConcurrentExecutions": 2}], "MaxConcurrentGameSessionActivations": 10, "GameSessionActivationTimeoutSeconds": 0}'
 echo "Fleet created!"
 exit 0
