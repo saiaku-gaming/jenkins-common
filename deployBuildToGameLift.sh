@@ -24,8 +24,6 @@ echo "Creating fleet..."
 FLEET_ARN=$(/home/jenkins/.local/bin/aws gamelift create-fleet --name "$3 Fleet" --build-id "$BUILD_ID" --ec2-instance-type "c4.large" --ec2-inbound-permissions '[{"FromPort": 7777,"ToPort": 7787,"IpRange": "0.0.0.0/0","Protocol": "UDP"},{"FromPort": 8990,"ToPort": 9000,"IpRange": "0.0.0.0/0","Protocol": "TCP"}]' --runtime-configuration '{"ServerProcesses": [{"LaunchPath": "/local/game/valhalla/Binaries/Linux/valhallaServer", "Parameters": "-Log -GameLift", "ConcurrentExecutions": 10}], "MaxConcurrentGameSessionActivations": 10, "GameSessionActivationTimeoutSeconds": 1}' | jq .FleetAttributes.FleetArn | sed s/\"//g)
 echo "Fleet created!"
 
-/home/jenkins/.local/bin/aws gamelift delete-game-session-queue --name "DungeonQueue$BUILD_ID"
-
 /home/jenkins/.local/bin/aws gamelift create-game-session-queue --name "DungeonQueue$BUILD_ID" --destinations DestinationArn=$FLEET_ARN --timeout-in-seconds 600
 echo "DungeonQueue Created"
 
