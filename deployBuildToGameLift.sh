@@ -5,6 +5,7 @@ set -e
 cd /home/valhalla
 
 rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer/ ./downloaded-builds/LinuxServer
+cp ./jenkins-common/gamelift-install.sh ./downloaded-builds/LinuxServer/install.sh
 
 echo "Uploading build..."
 OUTPUT="$(/home/jenkins/.local/bin/aws gamelift upload-build --name "$1 Build" --build-version $1 --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
