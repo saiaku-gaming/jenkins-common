@@ -1,13 +1,18 @@
 #!/bin/sh
 
+set -x
+set -e
+
 sudo wget https://github.com/Graylog2/collector-sidecar/releases/download/0.1.4/collector-sidecar-0.1.4-1.x86_64.rpm
 sudo rpm -i collector-sidecar-0.1.4-1.x86_64.rpm
 
 sudo graylog-collector-sidecar -service install
-sudo mkdir -p /etc/graylog/collector-sidecar/
-sudo chmod -R ugo+rw /etc/graylog
+sudo mkdir -p /etc/graylog/collector-sidecar
+sudo chmod -R 777 /etc/graylog
 
-cat > /etc/graylog/collector-sidecar/collector_sidecar.yml <<- EOM
+sudo service collector-sidecar stop
+
+sudo tee -a /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
 server_url:  https://graylog.valhalla-game.com/api/
 update_interval: 10
 tls_skip_verify: false
@@ -32,7 +37,9 @@ backends:
     enabled: true
     binary_path: /usr/bin/filebeat
     configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
-EOM
+EOF
+
+echo "Lets roll"
 
 sudo service collector-sidecar start
 
