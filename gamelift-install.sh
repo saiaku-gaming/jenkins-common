@@ -7,7 +7,7 @@ sudo graylog-collector-sidecar -service install
 sudo mkdir -p /etc/graylog/collector-sidecar/
 sudo chmod -R ugo+rw /etc/graylog
 
-cat > /etc/graylog/collector-sidecar/collector_sidecar.yml <<- EOM 
+cat > /etc/graylog/collector-sidecar/collector_sidecar.yml <<- EOM
 server_url:  https://graylog.valhalla-game.com/api/
 update_interval: 10
 tls_skip_verify: false
@@ -22,16 +22,16 @@ log_path: /var/log/graylog/collector-sidecar
 log_rotation_time: 86400
 log_max_age: 604800
 tags:
-    - gamelift
+  - gamelift
 backends:
-    - name: nxlog
-      enabled: false
-      binary_path: /usr/bin/nxlog
-      configuration_path: /etc/graylog/collector-sidecar/generated/nxlog.conf
-    - name: filebeat
-      enabled: true
-      binary_path: /usr/bin/filebeat
-      configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
+  - name: nxlog
+    enabled: false
+    binary_path: /usr/bin/nxlog
+    configuration_path: /etc/graylog/collector-sidecar/generated/nxlog.conf
+  - name: filebeat
+    enabled: true
+    binary_path: /usr/bin/filebeat
+    configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
 EOM
 
 sudo service collector-sidecar start
