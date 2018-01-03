@@ -26,7 +26,7 @@ echo "Fleet created!"
 
 RESPONSE=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
 SIZE=$(echo $RESPONSE | jq '.GameSessionQueues | length')
-SIZE=`expr $SIZE - 1`
+SIZE=$(( $SIZE - 1 ))
 
 echo "Deleting old queues"
 for i in `seq 0 $SIZE`; do
