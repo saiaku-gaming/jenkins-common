@@ -10,8 +10,6 @@ sudo graylog-collector-sidecar -service install
 sudo mkdir -p /etc/graylog/collector-sidecar
 sudo chmod -R 777 /etc/graylog
 
-sudo service collector-sidecar stop
-
 sudo tee -a /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
 server_url:  https://graylog.valhalla-game.com/api/
 update_interval: 10
@@ -42,4 +40,3 @@ EOF
 echo "Lets roll"
 
 sudo service collector-sidecar start
-
