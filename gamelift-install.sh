@@ -9,7 +9,7 @@ sudo rpm -i collector-sidecar-0.1.4-1.x86_64.rpm
 sudo graylog-collector-sidecar -service install
 sudo mkdir -p /etc/graylog/collector-sidecar
 sudo tee -a /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
-server_url:  https://graylog.valhalla-game.com/api/
+server_url: https://graylog.valhalla-game.com/api/
 update_interval: 10
 tls_skip_verify: false
 send_status: true
