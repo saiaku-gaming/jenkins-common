@@ -8,8 +8,6 @@ sudo rpm -i collector-sidecar-0.1.4-1.x86_64.rpm
 
 sudo graylog-collector-sidecar -service install
 sudo mkdir -p /etc/graylog/collector-sidecar
-sudo chmod -R 777 /etc/graylog
-
 sudo tee -a /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
 server_url:  https://graylog.valhalla-game.com/api/
 update_interval: 10
@@ -36,5 +34,3 @@ backends:
     binary_path: /usr/bin/filebeat
     configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
 EOF
-
-sudo service collector-sidecar start
