@@ -37,6 +37,4 @@ backends:
     configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
 EOF
 
-echo "Lets roll"
-
 sudo service collector-sidecar start
