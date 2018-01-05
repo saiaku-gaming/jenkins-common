@@ -16,7 +16,6 @@ send_status: true
 list_log_files:
   - /var/log
   - /local/game/valhalla/Saved/Logs
-node_id: graylog-collector-sidecar
 collector_id: file:/etc/graylog/collector-sidecar/collector-id
 cache_path: /var/cache/graylog/collector-sidecar
 log_path: /var/log/graylog/collector-sidecar
