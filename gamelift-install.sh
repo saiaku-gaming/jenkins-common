@@ -34,3 +34,6 @@ backends:
     binary_path: /usr/bin/filebeat
     configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
 EOF
+
+sudo service collector-sidecar stop || true
+sudo service collector-sidecar start || true
