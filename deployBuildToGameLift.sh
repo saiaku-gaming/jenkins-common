@@ -2,7 +2,27 @@
 
 set -e
 
+delete_game_session_queues() {
+	local QUEUES=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
+	local Q_SIZE=$(echo $QUEUES)
+}
+
 cd /home/valhalla
+
+echo "Removing old fleets..."
+
+EXISTING_FLEETS=$(/home/jenkins/.local/bin/aws gamelift describe-fleet-attributes)
+
+SIZE=$(echo $RESPONSE | jq '.FleetAttributes | length')
+SIZE=$(( $SIZE - 1 ))
+
+for i in `seq 0 $SIZE`; do
+	FLEET_ARN=$(echo $EXISTING_FLEETS | jq ".FleetAttributes[$i].FleetArn" | sed 's/"//g')
+	INSTANCES=$(/home/jenkins/.local/bin/aws gamelift describe-instances --fleet-id $FLEET_ID | jq '.Instances | length')
+	if [[ INSTANCES -ne 0 ]]; then
+		delete_game_session_queues $FLEET_ARN
+	fi
+done
 
 rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer/ ./downloaded-builds/LinuxServer
 cp ./jenkins-common/gamelift-install.sh ./downloaded-builds/LinuxServer/install.sh
