@@ -46,6 +46,29 @@ for i in `seq 0 $SIZE`; do
 	fi
 done
 
+QUEUES=$(/home/jeknins/.local/bin/aws gamelift describe-game-session-queues)
+
+Q_SIZE=$(echo $QUEUES | jq '.GameSessionQueues | length')
+Q_SIZE=$(( $Q_SIZE - 1 ))
+DESTINATION_ARN=""
+FOUND_LINK=""
+QUEUE_NAME=""
+
+for i in `seq 0 $Q_SIZE`; do
+	DESTINATION_ARN=$(echo $QUEUES | jq ".GameSessionQueues[$i].Destinations[0].DestinationArn" | sed 's/"//g')
+	for j in `seq 0 $SIZE`; do
+		FLEET_ARN=$(echo $EXISTING_FLEETS | jq ".FleetAttributes[$j].FleetArn" | sed 's/"//g')
+		if [ "$DESTINATION_ARN" = "$FLEET_ARN" ]; then
+			FOUND_LINK="true"
+		fi
+	done
+	if [ -z $FOUND_LINK ]; then
+		QUEUE_NAME=$(echo $QUEUES | jq ".GameSessionQueues[$i].Name" | sed 's/"//g')
+		/home/jenkins/.local/bin/aws gamelift delete-game-session-queue --name $QUEUE_NAME
+	fi
+	FOUND_LINK=""
+done
+
 rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer/ ./downloaded-builds/LinuxServer
 cp ./jenkins-common/gamelift-install.sh ./downloaded-builds/LinuxServer/install.sh
 
