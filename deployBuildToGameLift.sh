@@ -4,12 +4,14 @@ set -e
 
 delete_game_session_queues() {
 	local QUEUE_NAME=""
-	local QUEUES=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
-	local Q_SIZE=$(echo "$QUEUES" | jq '.GameSessionQueues | length')
+	local QUEUES="$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)"
+	local Q_SIZE="$(echo "$QUEUES" | jq '.GameSessionQueues | length')"
+	local DESTINATION_ARN=""
 	Q_SIZE=$(( $Q_SIZE - 1))
 
 	for j in `seq 0 $Q_SIZE`; do
-		if [ "$1" == "$(echo "$QUEUES" | jq ".GameSessionQueues[$j].Destinations[0].DestinationArn" | sed 's/"//g')" ]; then
+		DESTINATION_ARN="$(echo "$QUEUES" | jq  ".GameSessionQueues[$j].Destinations[0].DestinationArn" | sed 's/"//g')"
+		if [ "$1" = "$DESTINATION_ARN" ]; then
 			QUEUE_NAME="$(echo "$QUEUES" | jq ".GameSessionQueues[$j].Name" | sed 's/"//g')"
 			/home/jenkins/.local/bin/aws gamelift delete-game-session-queue --name "$QUEUE_NAME"
 		fi
@@ -22,21 +24,25 @@ echo "Removing old fleets..."
 
 EXISTING_FLEETS=$(/home/jenkins/.local/bin/aws gamelift describe-fleet-attributes)
 
-SIZE=$(echo $RESPONSE | jq '.FleetAttributes | length')
+SIZE=$(echo $EXISTING_FLEETS | jq '.FleetAttributes | length')
 SIZE=$(( $SIZE - 1 ))
 FLEET_ARN=""
-INSTANCES=""
+INSTANCES=0
 STATUS=""
 FLEET_ID=""
+BUILD_ID=""
 
 for i in `seq 0 $SIZE`; do
 	FLEET_ARN=$(echo $EXISTING_FLEETS | jq ".FleetAttributes[$i].FleetArn" | sed 's/"//g')
+	FLEET_ID=$(echo $EXISTING_FLEETS | jq ".FleetAttributes[$i].FleetId" | sed 's/"//g')
 	INSTANCES=$(/home/jenkins/.local/bin/aws gamelift describe-instances --fleet-id $FLEET_ID | jq '.Instances | length')
 	STATUS=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Status" | sed 's/"//g')
-	if [ $INSTANCES -eq 0 ] && [ "$STATUS" == "ACTIVE" ]; then
+	if [ "$INSTANCES" = "0" -a "$STATUS" = "ACTIVE" ]; then
 		FLEET_ID=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].FleetId" | sed 's/"//g')
 		delete_game_session_queues "$FLEET_ARN"
-		/home/jenkins/.local/bin/aws --fleet-id "$FLEET_ID"
+		/home/jenkins/.local/bin/aws gamelift delete-fleet --fleet-id "$FLEET_ID"
+		BUILD_ID="$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].BuildId" | sed 's/"//g')"
+		/home/jenkins/.local/bin/aws gamelift delete-build --build-id "$BUILD_ID"
 	fi
 done
 
