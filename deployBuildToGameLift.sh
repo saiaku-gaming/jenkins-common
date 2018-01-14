@@ -3,8 +3,17 @@
 set -e
 
 delete_game_session_queues() {
+	local QUEUE_NAME=""
 	local QUEUES=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
-	local Q_SIZE=$(echo $QUEUES)
+	local Q_SIZE=$(echo "$QUEUES" | jq '.GameSessionQueues | length')
+	Q_SIZE=$(( $Q_SIZE - 1))
+
+	for j in `seq 0 $Q_SIZE`; do
+		if [ "$1" == "$(echo "$QUEUES" | jq ".GameSessionQueues[$j].Destinations[0].DestinationArn" | sed 's/"//g')" ]; then
+			QUEUE_NAME="$(echo "$QUEUES" | jq ".GameSessionQueues[$j].Name" | sed 's/"//g')"
+			/home/jenkins/.local/bin/aws gamelift delete-game-session-queue --name "$QUEUE_NAME"
+		fi
+	done
 }
 
 cd /home/valhalla
@@ -15,12 +24,19 @@ EXISTING_FLEETS=$(/home/jenkins/.local/bin/aws gamelift describe-fleet-attribute
 
 SIZE=$(echo $RESPONSE | jq '.FleetAttributes | length')
 SIZE=$(( $SIZE - 1 ))
+FLEET_ARN=""
+INSTANCES=""
+STATUS=""
+FLEET_ID=""
 
 for i in `seq 0 $SIZE`; do
 	FLEET_ARN=$(echo $EXISTING_FLEETS | jq ".FleetAttributes[$i].FleetArn" | sed 's/"//g')
 	INSTANCES=$(/home/jenkins/.local/bin/aws gamelift describe-instances --fleet-id $FLEET_ID | jq '.Instances | length')
-	if [[ INSTANCES -ne 0 ]]; then
-		delete_game_session_queues $FLEET_ARN
+	STATUS=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Status" | sed 's/"//g')
+	if [ $INSTANCES -eq 0 ] && [ "$STATUS" == "ACTIVE" ]; then
+		FLEET_ID=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].FleetId" | sed 's/"//g')
+		delete_game_session_queues "$FLEET_ARN"
+		/home/jenkins/.local/bin/aws --fleet-id "$FLEET_ID"
 	fi
 done
 
@@ -57,17 +73,17 @@ echo "Adding scaling policies"
 
 /home/jenkins/.local/bin/aws gamelift put-scaling-policy --name "Scale up" --fleet-id "$FLEET_ID" --scaling-adjustment "1" --scaling-adjustment-type "ExactCapacity" --threshold "1" --comparison-operator "GreaterThanOrEqualToThreshold" --evaluation-periods "1" --metric-name "QueueDepth"
 
-RESPONSE=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
-SIZE=$(echo $RESPONSE | jq '.GameSessionQueues | length')
-SIZE=$(( $SIZE - 1 ))
+#RESPONSE=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
+#SIZE=$(echo $RESPONSE | jq '.GameSessionQueues | length')
+#SIZE=$(( $SIZE - 1 ))
 
-echo "Deleting old queues"
-for i in `seq 0 $SIZE`; do
-	NAME=$(echo $RESPONSE | jq ".GameSessionQueues[$i].Name" | sed 's,",,g')
-	echo "Deleting queue $NAME..."
-	/home/jenkins/.local/bin/aws gamelift delete-game-session-queue --name $NAME
-done
-echo "Old queues deleted"
+#echo "Deleting old queues"
+#for i in `seq 0 $SIZE`; do
+#	NAME=$(echo $RESPONSE | jq ".GameSessionQueues[$i].Name" | sed 's,",,g')
+#	echo "Deleting queue $NAME..."
+#	/home/jenkins/.local/bin/aws gamelift delete-game-session-queue --name $NAME
+#done
+#echo "Old queues deleted"
 
 /home/jenkins/.local/bin/aws gamelift create-game-session-queue --name "DungeonQueue$1" --destinations DestinationArn=$FLEET_ARN --timeout-in-seconds 600
 echo "DungeonQueue Created"
