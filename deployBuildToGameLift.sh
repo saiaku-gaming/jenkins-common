@@ -46,7 +46,7 @@ for i in `seq 0 $SIZE`; do
 	fi
 done
 
-QUEUES=$(/home/jeknins/.local/bin/aws gamelift describe-game-session-queues)
+QUEUES=$(/home/jenkins/.local/bin/aws gamelift describe-game-session-queues)
 
 Q_SIZE=$(echo $QUEUES | jq '.GameSessionQueues | length')
 Q_SIZE=$(( $Q_SIZE - 1 ))
