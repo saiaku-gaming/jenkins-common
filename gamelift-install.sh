@@ -11,8 +11,8 @@ sudo mkdir -p /etc/graylog/collector-sidecar
 sudo mkdir -p /local/game/valhalla/Saved/Logs
 sudo chmod -R 777 /local/game/valhalla/Saved
 
-sudo tee -a /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
-server_url: https://graylog.valhalla-game.com/api/
+sudo tee /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
+server_url: http://graylog.valhalla-game.com:9001/api/
 update_interval: 10
 tls_skip_verify: false
 send_status: true
