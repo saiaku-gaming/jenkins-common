@@ -69,7 +69,11 @@ for i in `seq 0 $Q_SIZE`; do
 	FOUND_LINK=""
 done
 
-rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer/ ./downloaded-builds/LinuxServer
+rm -rf ./downloaded-builds/LinuxServer
+
+wget -m -nH --cut-dirs=2 -P ./downloaded-builds/LinuxServer ftp://jenkins:$2@ftp.valhalla-game.com/$1/LinuxServer
+
+#rsync -az --delete jenkins@valhalla-game.com:/home/valhalla/builds/$1/LinuxServer/ ./downloaded-builds/LinuxServer
 cp ./jenkins-common/gamelift-install.sh ./downloaded-builds/LinuxServer/install.sh
 
 #pre create an empty saved logs file so that graylog can monitor the folder on system start.
