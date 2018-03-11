@@ -79,6 +79,8 @@ cp ./jenkins-common/gamelift-install.sh ./downloaded-builds/LinuxServer/install.
 #pre create an empty saved logs file so that graylog can monitor the folder on system start.
 mkdir -p ./downloaded-builds/LinuxServer/valhalla/Saved/Logs
 
+chmod +x ./downloaded-builds/LinuxServer/valhalla/Binaries/Linux/valhallaServer
+
 echo "Uploading build..."
 OUTPUT="$(/home/jenkins/.local/bin/aws gamelift upload-build --name "$1 Build" --build-version $1 --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
 BUILD_ID="$(echo $OUTPUT | tail -n 1 | sed 's/^.*Build ID: //')"
