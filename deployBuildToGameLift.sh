@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 pip install awscli --upgrade --user
 PATH=~/.local/bin/:$PATH
