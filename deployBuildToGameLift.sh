@@ -1,11 +1,9 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 pip install awscli --upgrade --user
 PATH=~/.local/bin/:$PATH
-
-set -ex
 
 export AWS_DEFAULT_REGION=eu-central-1
 export AWS_DEFAULT_OUTPUT=json
@@ -79,7 +77,8 @@ rm -rf ./downloaded-builds/LinuxServer
 
 wget -m -nH --cut-dirs=2 -P ./downloaded-builds/LinuxServer ftp://jenkins:$2@ftp.valhalla-game.com/$1/LinuxServer
 
-cp ./jenkins-common/gamelift-install.sh ./downloaded-builds/LinuxServer/install.sh
+wget -P ./downloaded-builds/LinuxServer/ https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/gamelift-install.sh
+chmod +x ./downloaded-builds/LinuxServer/gamelift-install.sh
 
 #pre create an empty saved logs file so that graylog can monitor the folder on system start.
 mkdir -p ./downloaded-builds/LinuxServer/valhalla/Saved/Logs
