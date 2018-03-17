@@ -5,6 +5,8 @@ set -ex
 pip install awscli --upgrade --user
 PATH=~/.local/bin/:$PATH
 
+set -ex
+
 export AWS_DEFAULT_REGION=eu-central-1
 export AWS_DEFAULT_OUTPUT=json
 
