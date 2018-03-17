@@ -5,6 +5,9 @@ set -e
 pip install awscli --upgrade --user
 PATH=~/.local/bin/:$PATH
 
+export AWS_DEFAULT_REGION=eu-central-1
+export AWS_DEFAULT_OUTPUT=json
+
 delete_game_session_queues() {
 	local QUEUE_NAME=""
 	local QUEUES="$(aws gamelift describe-game-session-queues)"
