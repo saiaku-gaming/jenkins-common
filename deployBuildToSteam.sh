@@ -9,7 +9,7 @@ BUILDER_DIR=SteamContentBuilder
 
 rm -r $BUILDER_DIR || true
 
-wget -P $BUILDER_DIR ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILDER_DIR
+wget -m -nH --cut-dirs=1 -P $BUILDER_DIR ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILDER_DIR
 
 wget -m -nH --cut-dirs=2 -P $BUILDER_DIR/content/windows_content ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILD_VERSION/WindowsNoEditor
 
