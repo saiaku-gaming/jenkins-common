@@ -3,9 +3,22 @@
 BUILD_VERSION=$1
 STEAM_USER=$2
 STEAM_PASSWORD=$3
+FTP_PASSWORD=$4
 
-BUILDER_DIR="/home/valhalla/sdk/tools/ContentBuilder"
+BUILDER_DIR=SteamContentBuilder
 
-rsync -ax --delete "jenkins@valhalla-game.com:/home/valhalla/builds/$BUILD_VERSION/WindowsClient/WindowsNoEditor/" "$BUILDER_DIR/content/windows_content"
+rm -r $BUILDER_DIR || true
 
-/home/valhalla/sdk/tools/ContentBuilder/builder_linux/steamcmd.sh +login $STEAM_USER $STEAM_PASSWORD +run_app_build $BUILDER_DIR/scripts/app_build_763550.vdf +quit
+wget -m -nH --cut-dirs=1 -P $BUILDER_DIR ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILDER_DIR
+chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
+chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
+
+wget -m -nH --cut-dirs=2 -P $BUILDER_DIR/content/windows_content ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILD_VERSION/WindowsNoEditor
+
+curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/app_build_763550.vdf > $BUILDER_DIR/scripts/app_build_763550.vdf
+curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/depot_build_763551.vdf > $BUILDER_DIR/scripts/depot_build_763551.vdf
+
+#If below does not work, try installing support for 32-bit os.
+#sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
+
+/bin/bash $BUILDER_DIR/builder_linux/steamcmd.sh +login $STEAM_USER $STEAM_PASSWORD +run_app_build $(pwd)/$BUILDER_DIR/scripts/app_build_763550.vdf +quit
