@@ -108,9 +108,9 @@ FLEET_ID=$(echo $FLEET_RESPONSE | jq .FleetAttributes.FleetId | sed s/\"//g)
 echo "Fleet created!"
 echo "Adding scaling policies"
 
-aws gamelift put-scaling-policy --name "Scale down" --fleet-id "$FLEET_ID" --scaling-adjustment "0" --scaling-adjustment-type "ExactCapacity" --threshold "0" --comparison-operator "LessThanOrEqualToThreshold" --evaluation-periods "120" --metric-name "ActiveGameSessions"
-
 aws gamelift put-scaling-policy --name "Scale up" --fleet-id "$FLEET_ID" --scaling-adjustment "1" --scaling-adjustment-type "ExactCapacity" --threshold "1" --comparison-operator "GreaterThanOrEqualToThreshold" --evaluation-periods "1" --metric-name "QueueDepth"
+
+aws gamelift put-scaling-policy --name "Scale down" --fleet-id "$FLEET_ID" --scaling-adjustment "0" --scaling-adjustment-type "ExactCapacity" --threshold "1" --comparison-operator "LessThanThreshold" --evaluation-periods "120" --metric-name "ActiveGameSessions"
 
 #RESPONSE=$(aws gamelift describe-game-session-queues)
 #SIZE=$(echo $RESPONSE | jq '.GameSessionQueues | length')
