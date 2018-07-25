@@ -3,7 +3,7 @@ import getpass
 import sys
 import telnetlib
 print "started"
-HOST = "valhalla-game.se"
+HOST = "teamspeak.xn--smst-loa.se"
 user = sys.argv[2]
 password = sys.argv[3]
 
