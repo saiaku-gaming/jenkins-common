@@ -27,6 +27,8 @@ fi
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$APP_BUILD_NAME > $BUILDER_DIR/scripts/app_build_763550.vdf
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/depot_build_763551.vdf > $BUILDER_DIR/scripts/depot_build_763551.vdf
 
+sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_763550.vdf
+
 #If below does not work, try installing support for 32-bit os.
 #sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
 
