@@ -41,10 +41,9 @@ for i in `seq 0 $SIZE`; do
 	FLEET_ID=$(echo $EXISTING_FLEETS | jq ".FleetAttributes[$i].FleetId" | sed 's/"//g')
 	INSTANCES=$(aws gamelift describe-instances --fleet-id $FLEET_ID | jq '.Instances | length')
 	STATUS=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Status" | sed 's/"//g')
-	NAME=$(echo "EXISTING_FLEETS" | jq ".FleetAttributes[$i].Name" | sed 's/"//g')
+	NAME=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Name" | sed 's/"//g')
 	if [ ! -z "$(echo "$NAME" | grep "$3")" ]; then
 		if [ "$INSTANCES" = "0" -a "$STATUS" = "ACTIVE" ]; then
-			FLEET_ID=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].FleetId" | sed 's/"//g')
 			delete_game_session_queues "$FLEET_ARN"
 			aws gamelift delete-fleet --fleet-id "$FLEET_ID"
 			BUILD_ID="$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].BuildId" | sed 's/"//g')"
