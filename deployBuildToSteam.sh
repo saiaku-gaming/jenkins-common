@@ -18,9 +18,11 @@ wget -m -nH --cut-dirs=2 -P $BUILDER_DIR/content/windows_content ftp://jenkins:$
 
 APP_BUILD_NAME="dev-app_build_763550.vdf"
 
-if [ "$5" = "development" ]; then
+if [ "$5" = "Development" ]; then
 	APP_BUILD_NAME="dev-app_build_763550.vdf"
-elif [ "$5" = "production" ]; then
+elif [ "$5" = "DebugGame" ]; then
+	APP_BUILD_NAME="dev-app_build_763550.vdf"
+elif [ "$5" = "Shipping" ]; then
 	APP_BUILD_NAME="prod-app_build_763550.vdf"
 fi
 
