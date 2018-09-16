@@ -77,7 +77,7 @@ done
 
 rm -rf ./downloaded-builds/LinuxServer
 
-wget -m -nH --cut-dirs=2 -P ./downloaded-builds/LinuxServer ftp://jenkins:$2@ftp.valhalla-game.com/$1/LinuxServer
+wget -m -nH --cut-dirs=2 -P ./downloaded-builds/LinuxServer ftp://jenkins:$2@ftp.valhalla-game.com/$1$3/LinuxServer
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/gamelift-install.sh > downloaded-builds/LinuxServer/install.sh
 chmod +x ./downloaded-builds/LinuxServer/install.sh
