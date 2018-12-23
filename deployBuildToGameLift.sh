@@ -88,7 +88,7 @@ mkdir -p ./downloaded-builds/LinuxServer/valhalla/Saved/Logs
 chmod +x ./downloaded-builds/LinuxServer/valhalla/Binaries/Linux/valhallaServer
 
 echo "Uploading build..."
-OUTPUT="$(aws gamelift upload-build --name "$3 $1 Build" --build-version $1 --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
+OUTPUT="$(aws gamelift upload-build --name "$3 $1 Build" --build-version $1$3 --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
 BUILD_ID="$(echo $OUTPUT | tail -n 1 | sed 's/^.*Build ID: //')"
 echo "Build uploaded with id: $BUILD_ID"
 COUNT=0
