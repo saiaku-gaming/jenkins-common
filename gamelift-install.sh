@@ -3,39 +3,40 @@
 set -x
 set -e
 
-sudo wget https://github.com/Graylog2/collector-sidecar/releases/download/0.1.4/collector-sidecar-0.1.4-1.x86_64.rpm
-sudo rpm -i collector-sidecar-0.1.4-1.x86_64.rpm
+sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-x86_64.rpm
+sudo rpm -vi filebeat-6.6.1-x86_64.rpm
 
-sudo graylog-collector-sidecar -service install
-sudo mkdir -p /etc/graylog/collector-sidecar
 sudo mkdir -p /local/game/valhalla/Saved/Logs
 sudo chmod -R 777 /local/game/valhalla/Saved
 
-sudo tee /etc/graylog/collector-sidecar/collector_sidecar.yml <<EOF
-server_url: http://graylog.valhalla-game.com:9001/api/
-update_interval: 10
-tls_skip_verify: false
-send_status: true
-list_log_files:
-  - /var/log
-  - /local/game/valhalla/Saved/Logs
-collector_id: file:/etc/graylog/collector-sidecar/collector-id
-cache_path: /var/cache/graylog/collector-sidecar
-log_path: /var/log/graylog/collector-sidecar
-log_rotation_time: 86400
-log_max_age: 604800
-tags:
-  - gamelift
-backends:
-  - name: nxlog
-    enabled: false
-    binary_path: /usr/bin/nxlog
-    configuration_path: /etc/graylog/collector-sidecar/generated/nxlog.conf
-  - name: filebeat
+sudo tee /etc/filebeat/filebeat.yml <<EOF
+filebeat.inputs:
+  - type: log
     enabled: true
-    binary_path: /usr/bin/filebeat
-    configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml
+    paths:
+      - /var/log/messages
+      - /local/game/valhalla/Saved/Logs/*.log
+    exclude_files: ['.*backup.*']
+    #multiline.pattern: ^\[
+    #multiline.negate: false
+    #multiline.match: after
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+setup.template.settings:
+  index.number_of_shards: 1
+#tags: ["service-X", "web-tier"]
+#fields:
+#  env: staging
+output.logstash:
+  hosts: ["logstash.logstash.valhalla-game.com:5044"]
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+  #ssl.key: "/etc/pki/client/cert.key"
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
 EOF
 
-sudo service collector-sidecar stop || true
-sudo service collector-sidecar start || true
+sudo service filebeat stop || true
+sudo service filebeat start || true
