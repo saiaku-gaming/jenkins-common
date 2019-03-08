@@ -14,12 +14,15 @@ filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /var/log/messages
       - /local/game/valhalla/Saved/Logs/*.log
     exclude_files: ['.*backup.*']
     multiline.pattern: ^\[[0-9]{4}.[0-9]{2}.[0-9]{2}
     multiline.negate: true
     multiline.match: after
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/messages
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
@@ -38,5 +41,4 @@ processors:
   - add_cloud_metadata: ~
 EOF
 
-sudo service filebeat stop || true
 sudo service filebeat start || true
