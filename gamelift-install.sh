@@ -4,7 +4,9 @@ set -x
 set -e
 
 sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-x86_64.rpm
+
 sudo rpm -vi filebeat-6.6.1-x86_64.rpm
+sudo service filebeat stop || true
 
 sudo mkdir -p /local/game/valhalla/Saved/Logs
 sudo chmod -R 777 /local/game/valhalla/Saved
@@ -41,4 +43,6 @@ processors:
   - add_cloud_metadata: ~
 EOF
 
+sudo chkconfig --add filebeat  || true
+sudo chkconfig filebeat on || true
 sudo service filebeat start || true
