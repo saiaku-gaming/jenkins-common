@@ -45,4 +45,5 @@ EOF
 
 sudo chkconfig --add filebeat  || true
 sudo chkconfig filebeat on || true
-sudo service filebeat start || true
+sudo nohup service filebeat start
+
