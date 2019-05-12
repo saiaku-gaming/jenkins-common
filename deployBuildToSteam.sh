@@ -3,26 +3,30 @@
 BUILD_VERSION=$1
 STEAM_USER=$2
 STEAM_PASSWORD=$3
-FTP_PASSWORD=$4
-RELEASE_VERSION=$5
+ARTIFACTORY_USER=$4
+ARTIFACTORY_PASSWORD=$5
+RELEASE_VERSION=$6
 
 BUILDER_DIR=SteamContentBuilder
 
 rm -r $BUILDER_DIR || true
 
-wget -m -nH --cut-dirs=1 -P $BUILDER_DIR ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILDER_DIR
+wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/SteamContentBuilder.zip
+unzip SteamContentBuilder.zip
+
 chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
 chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
 
-wget -m -nH --cut-dirs=2 -P $BUILDER_DIR/content/windows_content ftp://jenkins:$FTP_PASSWORD@ftp.valhalla-game.com/$BUILD_VERSION$RELEASE_VERSION/WindowsNoEditor
+wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/valhalla-windows-client/WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip
+unzip WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 
 APP_BUILD_NAME="dev-app_build_763550.vdf"
 
-if [ "$5" = "Development" ]; then
+if [ "$RELEASE_VERSION" = "Development" ]; then
 	APP_BUILD_NAME="dev-app_build_763550.vdf"
-elif [ "$5" = "DebugGame" ]; then
+elif [ "$RELEASE_VERSION" = "DebugGame" ]; then
 	APP_BUILD_NAME="dev-app_build_763550.vdf"
-elif [ "$5" = "Shipping" ]; then
+elif [ "$RELEASE_VERSION" = "Shipping" ]; then
 	APP_BUILD_NAME="prod-app_build_763550.vdf"
 fi
 
