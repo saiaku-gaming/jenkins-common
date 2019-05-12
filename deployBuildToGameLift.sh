@@ -82,6 +82,7 @@ done
 
 rm -rf ./downloaded-builds/LinuxServer
 
+mkdir downloaded-builds
 wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/valhalla-linux-server/LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip
 unzip LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip -d downloaded-builds/LinuxServer
 
