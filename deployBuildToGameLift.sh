@@ -2,6 +2,11 @@
 
 set -e
 
+BUILD_VERSION=$1
+ARTIFACTORY_USER=$2
+ARTIFACTORY_PASSWORD=$3
+RELEASE_VERSION=$4
+
 pip install awscli --upgrade --user
 PATH=~/.local/bin/:$PATH
 
@@ -17,7 +22,7 @@ delete_game_session_queues() {
 
 	for j in `seq 0 $Q_SIZE`; do
 		DESTINATION_ARN="$(echo "$QUEUES" | jq  ".GameSessionQueues[$j].Destinations[0].DestinationArn" | sed 's/"//g')"
-		if [ "$1" = "$DESTINATION_ARN" ]; then
+		if [ "$BUILD_VERSION" = "$DESTINATION_ARN" ]; then
 			QUEUE_NAME="$(echo "$QUEUES" | jq ".GameSessionQueues[$j].Name" | sed 's/"//g')"
 			aws gamelift delete-game-session-queue --name "$QUEUE_NAME"
 		fi
@@ -42,7 +47,7 @@ for i in `seq 0 $SIZE`; do
 	INSTANCES=$(aws gamelift describe-instances --fleet-id $FLEET_ID | jq '.Instances | length')
 	STATUS=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Status" | sed 's/"//g')
 	NAME=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Name" | sed 's/"//g')
-	if [ ! -z "$(echo "$NAME" | grep "$3")" ]; then
+	if [ ! -z "$(echo "$NAME" | grep "$RELEASE_VERSION")" ]; then
 		if [ "$INSTANCES" = "0" -a "$STATUS" = "ACTIVE" ]; then
 			delete_game_session_queues "$FLEET_ARN"
 			aws gamelift delete-fleet --fleet-id "$FLEET_ID"
@@ -77,7 +82,8 @@ done
 
 rm -rf ./downloaded-builds/LinuxServer
 
-wget -m -nH --cut-dirs=2 -P ./downloaded-builds/LinuxServer ftp://jenkins:$2@ftp.valhalla-game.com/$1$3/LinuxServer
+wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/valhalla-linux-server/LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip
+unzip LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip -d downloaded-builds/LinuxServer
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/gamelift-install.sh > downloaded-builds/LinuxServer/install.sh
 chmod +x ./downloaded-builds/LinuxServer/install.sh
@@ -88,7 +94,7 @@ mkdir -p ./downloaded-builds/LinuxServer/valhalla/Saved/Logs
 chmod +x ./downloaded-builds/LinuxServer/valhalla/Binaries/Linux/valhallaServer
 
 echo "Uploading build..."
-OUTPUT="$(aws gamelift upload-build --name "$3 $1 Build" --build-version $1$3 --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
+OUTPUT="$(aws gamelift upload-build --name "$RELEASE_VERSION $BUILD_VERSION Build" --build-version $BUILD_VERSION$RELEASE_VERSION --build-root ./downloaded-builds/LinuxServer --operating-system AMAZON_LINUX --region "eu-central-1")"
 BUILD_ID="$(echo $OUTPUT | tail -n 1 | sed 's/^.*Build ID: //')"
 echo "Build uploaded with id: $BUILD_ID"
 COUNT=0
@@ -102,7 +108,7 @@ while [ "$READY" != "READY" ] && [ $COUNT -ne 60 ]; do
 done
 
 echo "Creating fleet..."
-FLEET_RESPONSE=$(aws gamelift create-fleet --name "$3 $1 Fleet" --build-id "$BUILD_ID" --ec2-instance-type "c4.large" --ec2-inbound-permissions '[{"FromPort": 7777,"ToPort": 7787,"IpRange": "0.0.0.0/0","Protocol": "UDP"},{"FromPort": 8990,"ToPort": 9000,"IpRange": "0.0.0.0/0","Protocol": "TCP"}]' --runtime-configuration '{"ServerProcesses": [{"LaunchPath": "/local/game/valhalla/Binaries/Linux/valhallaServer", "Parameters": "-Log -GameLift", "ConcurrentExecutions": 10}], "MaxConcurrentGameSessionActivations": 10, "GameSessionActivationTimeoutSeconds": 1}')
+FLEET_RESPONSE=$(aws gamelift create-fleet --name "$RELEASE_VERSION $BUILD_VERSION Fleet" --build-id "$BUILD_ID" --ec2-instance-type "c4.large" --ec2-inbound-permissions '[{"FromPort": 7777,"ToPort": 7787,"IpRange": "0.0.0.0/0","Protocol": "UDP"},{"FromPort": 8990,"ToPort": 9000,"IpRange": "0.0.0.0/0","Protocol": "TCP"}]' --runtime-configuration '{"ServerProcesses": [{"LaunchPath": "/local/game/valhalla/Binaries/Linux/valhallaServer", "Parameters": "-Log -GameLift", "ConcurrentExecutions": 10}], "MaxConcurrentGameSessionActivations": 10, "GameSessionActivationTimeoutSeconds": 1}')
 
 FLEET_ARN=$(echo $FLEET_RESPONSE | jq .FleetAttributes.FleetArn | sed s/\"//g)
 FLEET_ID=$(echo $FLEET_RESPONSE | jq .FleetAttributes.FleetId | sed s/\"//g)
@@ -126,7 +132,7 @@ aws gamelift put-scaling-policy --name "Scale down" --fleet-id "$FLEET_ID" --sca
 #done
 #echo "Old queues deleted"
 
-aws gamelift create-game-session-queue --name "DungeonQueue$1$3" --destinations DestinationArn=$FLEET_ARN --timeout-in-seconds 600
+aws gamelift create-game-session-queue --name "DungeonQueue$BUILD_VERSION$RELEASE_VERSION" --destinations DestinationArn=$FLEET_ARN --timeout-in-seconds 600
 echo "DungeonQueue Created"
 
 exit 0
