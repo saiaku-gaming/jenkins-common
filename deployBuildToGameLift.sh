@@ -80,7 +80,7 @@ for i in `seq 0 $Q_SIZE`; do
 	FOUND_LINK=""
 done
 
-rm -rf ./downloaded-builds/LinuxServer
+rm -rf ./downloaded-builds
 
 mkdir downloaded-builds
 wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/valhalla-linux-server/LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip
