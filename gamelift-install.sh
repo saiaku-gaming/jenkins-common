@@ -30,14 +30,8 @@ filebeat.config.modules:
   reload.enabled: false
 setup.template.settings:
   index.number_of_shards: 1
-#tags: ["service-X", "web-tier"]
-#fields:
-#  env: staging
 output.logstash:
-  hosts: ["logstash.logstash.valhalla-game.com:5044"]
-  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
-  #ssl.certificate: "/etc/pki/client/cert.pem"
-  #ssl.key: "/etc/pki/client/cert.key"
+  hosts: ["logstash.valhalla-game.com:32044"]
 processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
