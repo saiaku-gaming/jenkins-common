@@ -18,7 +18,7 @@ filebeat.inputs:
     paths:
       - /local/game/valhalla/Saved/Logs/*.log
     exclude_files: ['.*backup.*']
-    multiline.pattern: ^\[[0-9]{4}.[0-9]{2}.[0-9]{2}
+    multiline.pattern: ^\[[0-9]{4}\.[0-9]{2}\.[0-9]{2}
     multiline.negate: true
     multiline.match: after
   - type: log
