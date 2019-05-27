@@ -14,6 +14,7 @@ export AWS_DEFAULT_REGION=eu-central-1
 export AWS_DEFAULT_OUTPUT=json
 
 delete_game_session_queues() {
+	local FLEET_ARN="$1"
 	local QUEUE_NAME=""
 	local QUEUES="$(aws gamelift describe-game-session-queues)"
 	local Q_SIZE="$(echo "$QUEUES" | jq '.GameSessionQueues | length')"
@@ -22,7 +23,7 @@ delete_game_session_queues() {
 
 	for j in `seq 0 $Q_SIZE`; do
 		DESTINATION_ARN="$(echo "$QUEUES" | jq  ".GameSessionQueues[$j].Destinations[0].DestinationArn" | sed 's/"//g')"
-		if [ "$BUILD_VERSION" = "$DESTINATION_ARN" ]; then
+		if [ "$FLEET_ARN" = "$DESTINATION_ARN" ]; then
 			QUEUE_NAME="$(echo "$QUEUES" | jq ".GameSessionQueues[$j].Name" | sed 's/"//g')"
 			aws gamelift delete-game-session-queue --name "$QUEUE_NAME"
 		fi
@@ -47,6 +48,10 @@ for i in `seq 0 $SIZE`; do
 	INSTANCES=$(aws gamelift describe-instances --fleet-id $FLEET_ID | jq '.Instances | length')
 	STATUS=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Status" | sed 's/"//g')
 	NAME=$(echo "$EXISTING_FLEETS" | jq ".FleetAttributes[$i].Name" | sed 's/"//g')
+	if [ "$RELEASE_VERSION $BUILD_VERSION Fleet" = "$NAME" ]; then
+		echo "ERROR: The current release version and build version combination already exists... ROBIN!"
+		exit 1
+	fi
 	if [ ! -z "$(echo "$NAME" | grep "$RELEASE_VERSION")" ]; then
 		if [ "$INSTANCES" = "0" -a "$STATUS" = "ACTIVE" ]; then
 			delete_game_session_queues "$FLEET_ARN"
