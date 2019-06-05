@@ -10,6 +10,8 @@ RELEASE_VERSION=$6
 BUILDER_DIR=SteamContentBuilder
 
 rm -r $BUILDER_DIR || true
+rm -rf SteamContentBuilder*
+rm -rf WindowsNoEditor*
 
 wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/SteamContentBuilder.zip
 unzip SteamContentBuilder.zip
