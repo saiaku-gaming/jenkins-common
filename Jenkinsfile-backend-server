@@ -30,7 +30,7 @@ pipeline {
 
                     artifactId = readMavenPom(file: 'pom.xml').getArtifactId()
                     version = readMavenPom(file: 'pom.xml').getVersion()
-                    serviceName = artifactId.replace("server", "")
+                    serviceName = artifactId.replace("-server", "")
 
                     echo " ***** Build name:     $currentBuild.displayName"
                     echo " ***** Client Version: $version"
