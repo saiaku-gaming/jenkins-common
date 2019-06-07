@@ -30,6 +30,7 @@ pipeline {
 
                     artifactId = readMavenPom(file: 'pom.xml').getArtifactId()
                     version = readMavenPom(file: 'pom.xml').getVersion()
+                    serviceName = artifactId.replace("server", "")
 
                     echo " ***** Build name:     $currentBuild.displayName"
                     echo " ***** Client Version: $version"
@@ -53,7 +54,6 @@ pipeline {
         }
 
         stage('Deploy to rancher cluster') {
-            serviceName = "$artifactId".replace("server", "")
             steps {
                 sh "kubectx dev"
                 sh "kubectl set image -n default deployment/$serviceName $serviceName=$dockerRepository/$artifactId:v$BUILD_NUMBER"
