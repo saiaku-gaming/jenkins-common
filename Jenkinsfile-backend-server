@@ -43,13 +43,13 @@ pipeline {
 
         stage('Package artifact') {
             steps {
-                sh "mvn -f ./pom.xml clean package --update-snapshots"
+                sh "mvn clean package --update-snapshots"
             }
         }
 
         stage('Build and publish docker images') {
             steps {
-                sh "mvn -f ./pom.xml docker:build -DpushImageTag=true -DdockerImageTags=latest,v$BUILD_NUMBER"
+                sh "mvn docker:build -DpushImageTag=true -DdockerImageTags=latest,v$BUILD_NUMBER"
             }
         }
 

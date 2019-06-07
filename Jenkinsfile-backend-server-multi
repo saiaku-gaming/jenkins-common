@@ -3,7 +3,7 @@
 final dockerRepository = "registry.valhalla-game.com"
 
 pipeline {
-    agent any
+    agent { label 'linux' }
 
     stages {
         stage('Prepare') {
@@ -34,15 +34,9 @@ pipeline {
             }
         }
 
-        stage('mvn install') {
-            steps {
-                sh "mvn -f ./pom.xml clean install"
-            }
-        }
-
         stage('Package artifact') {
             steps {
-                sh "mvn -f ./pom.xml clean package --update-snapshots"
+                sh "mvn clean package --update-snapshots"
             }
         }
 
@@ -50,9 +44,9 @@ pipeline {
             steps {
                 script {
                     if(isProd) {
-                        sh "mvn -f ./pom.xml docker:build -DpushImageTag=true -DdockerImageTags=release-$version"
+                        sh "mvn docker:build -DpushImageTag=true -DdockerImageTags=release-$version"
                     } else {
-                        sh "mvn -f ./pom.xml docker:build -DpushImageTag=true -DdockerImageTags=latest,v$BUILD_NUMBER"
+                        sh "mvn docker:build -DpushImageTag=true -DdockerImageTags=latest,v$BUILD_NUMBER"
                     }
                 }
             }
