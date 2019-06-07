@@ -63,6 +63,6 @@ pipeline {
 
     tools {
         maven 'Maven 3.5.0'
-        jdk 'openjdk-1.8.0.171'
+        jdk 'openjdk-1.8.0'
     }
 }
