@@ -1,0 +1,68 @@
+#!groovy
+
+// Sonar Settings
+// final sonarScannerVersion="3.4.0.905"
+// final SONAR_HOST="http://some-sonar"
+// final sonarJavaBinaries="../**/target/classes"
+// final sonarJacocoReportPaths="target/jacoco.exec"
+// final sonarSurefireReportsPath="target/surefire-reports"
+// final sonarSourceEncoding="UTF-8"
+// final sonarExclusions = ""
+final dockerRepository = "registry.valhalla-game.com"
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Prepare') {
+            steps {
+                git(branch: "$BRANCH_NAME", url: scm.userRemoteConfigs[0].url)
+                script {
+                    gitCommit = sh(
+                            script: 'git rev-parse HEAD',
+                            returnStdout: true
+                    ).trim().take(10)
+
+                    gitDate = sh(
+                            script: 'git show -s --format=%cd --date=short HEAD',
+                            returnStdout: true
+                    ).trim()
+
+                    artifactId = readMavenPom(file: 'pom.xml').getArtifactId()
+                    version = readMavenPom(file: 'pom.xml').getVersion()
+
+                    echo " ***** Build name:     $currentBuild.displayName"
+                    echo " ***** Client Version: $version"
+
+                    echo 'Environment Parameters:'
+                    sh 'printenv'
+                }
+            }
+        }
+
+        stage('Package artifact') {
+            steps {
+                sh "mvn -f ./pom.xml clean package --update-snapshots"
+            }
+        }
+
+        stage('Build and publish docker images') {
+            steps {
+                sh "mvn -f ./pom.xml docker:build -DpushImageTag=true -DdockerImageTags=latest,v$BUILD_NUMBER"
+            }
+        }
+
+        stage('Deploy to rancher cluster') {
+            serviceName = "$artifactId".replace("server", "")
+            steps {
+                sh "kubectx dev"
+                sh "kubectl set image -n default deployment/$serviceName $serviceName=$dockerRepository/$artifactId:v$BUILD_NUMBER"
+            }
+        }
+    }
+
+    tools {
+        maven 'Maven 3.5.0'
+        jdk 'openjdk-1.8.0.171'
+    }
+}
