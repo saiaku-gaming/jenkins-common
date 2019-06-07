@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                git(branch: "$BRANCH_NAME", url: scm.userRemoteConfigs[0].url)
+                git(branch: "develop", url: "https://github.com/saiaku-gaming/actionbar-service-server.git")
                 script {
                     gitCommit = sh(
                             script: 'git rev-parse HEAD',
