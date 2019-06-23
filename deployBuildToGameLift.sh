@@ -138,7 +138,7 @@ aws gamelift put-scaling-policy --name "Scale down" --fleet-id "$FLEET_ID" --sca
 #done
 #echo "Old queues deleted"
 
-aws gamelift create-game-session-queue --name "DungeonQueue$BUILD_VERSION$RELEASE_VERSION" --destinations DestinationArn=$FLEET_ARN --timeout-in-seconds 6000
+aws gamelift create-game-session-queue --name "DungeonQueue$BUILD_VERSION$RELEASE_VERSION" --destinations DestinationArn=$FLEET_ARN --timeout-in-seconds 600
 echo "DungeonQueue Created"
 
 exit 0
