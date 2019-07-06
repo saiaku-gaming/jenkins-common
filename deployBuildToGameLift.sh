@@ -3,9 +3,8 @@
 set -e
 
 BUILD_VERSION=$1
-ARTIFACTORY_USER=$2
-ARTIFACTORY_PASSWORD=$3
-RELEASE_VERSION=$4
+STORAGE_SERVER_SECRET=$2
+RELEASE_VERSION=$3
 
 pip install awscli --upgrade --user
 PATH=~/.local/bin/:$PATH
@@ -88,7 +87,7 @@ done
 rm -rf *
 
 mkdir downloaded-builds
-wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/valhalla-linux-server/LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip
+wget --header="Authorization: $STORAGE_SERVER_SECRET" -O "LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip" https://binary-storage.valhalla-game.com/storage?path=valhalla-linux-server&name=LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip
 unzip LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip -d downloaded-builds/LinuxServer
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/gamelift-install.sh > downloaded-builds/LinuxServer/install.sh

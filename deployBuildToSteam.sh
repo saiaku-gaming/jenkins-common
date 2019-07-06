@@ -3,9 +3,8 @@
 BUILD_VERSION=$1
 STEAM_USER=$2
 STEAM_PASSWORD=$3
-ARTIFACTORY_USER=$4
-ARTIFACTORY_PASSWORD=$5
-RELEASE_VERSION=$6
+STORAGE_SERVER_SECRET=$4
+RELEASE_VERSION=$5
 
 BUILDER_DIR=SteamContentBuilder
 
@@ -19,7 +18,7 @@ unzip SteamContentBuilder.zip
 chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
 chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
 
-wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/valhalla-windows-client/WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip
+wget --header="Authorization: $STORAGE_SERVER_SECRET" -O "WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip" https://binary-storage.valhalla-game.com/storage?path=valhalla-linux-server&name=WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip
 unzip WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 
 APP_BUILD_NAME="dev-app_build_763550.vdf"
