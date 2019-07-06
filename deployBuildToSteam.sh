@@ -20,7 +20,7 @@ unzip SteamContentBuilder.zip
 chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
 chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
 
-wget --header="Authorization: $STORAGE_SERVER_SECRET" -O "WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip" "https://binary-storage.valhalla-game.com/storage?path=valhalla-linux-server&name=WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip"
+curl -sS -H "Authorization: $STORAGE_SERVER_SECRET" "https://binary-storage.valhalla-game.com/storage?path=valhalla-windows-client&name=WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip" --output "WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip"
 unzip WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 
 APP_BUILD_NAME="dev-app_build_763550.vdf"

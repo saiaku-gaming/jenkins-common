@@ -87,7 +87,7 @@ done
 rm -rf *
 
 mkdir downloaded-builds
-wget --header="Authorization: $STORAGE_SERVER_SECRET" -O "LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip" "https://binary-storage.valhalla-game.com/storage?path=valhalla-linux-server&name=LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip"
+curl -sS -H "Authorization: $STORAGE_SERVER_SECRET" "https://binary-storage.valhalla-game.com/storage?path=valhalla-linux-server&name=LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip" --output "LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip"
 unzip LinuxServer$BUILD_VERSION$RELEASE_VERSION.zip -d downloaded-builds/LinuxServer
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/gamelift-install.sh > downloaded-builds/LinuxServer/install.sh
