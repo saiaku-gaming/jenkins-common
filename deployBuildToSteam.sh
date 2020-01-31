@@ -14,7 +14,7 @@ rm -r $BUILDER_DIR || true
 rm -rf SteamContentBuilder*
 rm -rf WindowsNoEditor*
 
-wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/SteamContentBuilder.zip
+wget https://valhalla-game.com/files/SteamContentBuilder.zip
 unzip SteamContentBuilder.zip
 
 chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
