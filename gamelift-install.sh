@@ -3,9 +3,9 @@
 set -x
 set -e
 
-sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-x86_64.rpm
+sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.3.2-x86_64.rpm
 
-sudo rpm -vi filebeat-6.6.1-x86_64.rpm
+sudo rpm -vi filebeat-7.3.2-x86_64.rpm
 sudo service filebeat stop || true
 
 sudo mkdir -p /local/game/valhalla/Saved/Logs
