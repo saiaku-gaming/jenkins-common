@@ -15,19 +15,22 @@ fi
 
 BUILDER_DIR=SteamContentBuilder
 
-rm -r $BUILDER_DIR || true
-rm -rf SteamContentBuilder*
 rm -rf WindowsNoEditor*
 
-wget https://valhalla-game.com/files/SteamContentBuilder.zip
-unzip SteamContentBuilder.zip
-
-chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
-chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
-
 if [ "$USE_LOCAL" = "true" ]; then
+	echo "NOTE: Skipping SteamContentBuilder refresh for maximum speed!"
+	rm $BUILDER_DIR/content/windows_content
 	cp "/opt/binary-storage/valhalla-windows-client/WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip" .
 else
+	rm -r $BUILDER_DIR || true
+	rm SteamContentBuilder.zip || true
+
+	wget https://valhalla-game.com/files/SteamContentBuilder.zip
+	unzip SteamContentBuilder.zip
+
+	chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
+	chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
+
 	curl -sS -H "Authorization: $STORAGE_SERVER_SECRET" "https://binary-storage.valhalla-game.com/storage?path=valhalla-windows-client&name=WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip" --output "WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip"
 fi
 
@@ -49,7 +52,8 @@ curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/depot
 sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_763550.vdf
 
 if [ "$USE_LOCAL" = "true" ]; then
-	sed -i 's$"local" ""$"local" "/opt/valhalla-steam-content"$g' $BUILDER_DIR/scripts/app_build_763550.vdf
+	sed -i 's,"setlive" "development","setlive" "local",g' $BUILDER_DIR/scripts/app_build_763550.vdf
+	sed -i 's,"local" "","local" "/opt/valhalla-steam-content",g' $BUILDER_DIR/scripts/app_build_763550.vdf
 fi
 
 #If below does not work, try installing support for 32-bit os.
