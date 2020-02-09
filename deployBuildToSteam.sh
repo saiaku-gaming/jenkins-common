@@ -50,7 +50,7 @@ curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/depot
 sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_763550.vdf
 
 if [ "$USE_LOCAL" = "true" ]; then
-	sed -i 's$"local"	""$"local"	"/opt/valhalla-steam-content"$g' $BUILDER_DIR/scripts/app_build_763550.vdf
+	sed -i 's$"local" ""$"local" "/opt/valhalla-steam-content"$g' $BUILDER_DIR/scripts/app_build_763550.vdf
 fi
 
 #If below does not work, try installing support for 32-bit os.

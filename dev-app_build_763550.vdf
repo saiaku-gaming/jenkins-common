@@ -6,7 +6,7 @@
 	"contentroot" "..\content\" // root content folder, relative to location of this file
 	"setlive"	"development" // branch to set live after successful build, non if empty
 	"preview" "0" // to enable preview builds
-	"local"	""	// set to flie path of local content server 
+	"local" ""	// set to flie path of local content server
 	
 	"depots"
 	{
