@@ -7,8 +7,7 @@ STEAM_USER=$2
 STEAM_PASSWORD=$3
 STORAGE_SERVER_SECRET=$4
 RELEASE_VERSION=$5
-if [ "$6" == "local" ]
-then
+if [ "$6" = "local" ]; then
       USE_LOCAL=true
 else
       USE_LOCAL=false
