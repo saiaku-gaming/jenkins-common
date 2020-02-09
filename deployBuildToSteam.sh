@@ -7,6 +7,12 @@ STORAGE_SERVER_SECRET=$4
 ARTIFACTORY_USER=$5
 ARTIFACTORY_PASSWORD=$6
 RELEASE_VERSION=$7
+if [ "$8" == "local" ]
+then
+      USE_LOCAL=true
+else
+      USE_LOCAL=false
+fi
 
 BUILDER_DIR=SteamContentBuilder
 
@@ -37,6 +43,10 @@ curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$APP_
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/depot_build_763551.vdf > $BUILDER_DIR/scripts/depot_build_763551.vdf
 
 sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_763550.vdf
+
+if [ "$USE_LOCAL" = "true" ]; then
+	sed -i 's$"local"	""$"local"	"/opt/valhalla-steam-content"$g' $BUILDER_DIR/scripts/app_build_763550.vdf
+fi
 
 #If below does not work, try installing support for 32-bit os.
 #sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
