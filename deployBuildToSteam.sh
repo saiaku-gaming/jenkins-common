@@ -4,10 +4,8 @@ BUILD_VERSION=$1
 STEAM_USER=$2
 STEAM_PASSWORD=$3
 STORAGE_SERVER_SECRET=$4
-ARTIFACTORY_USER=$5
-ARTIFACTORY_PASSWORD=$6
-RELEASE_VERSION=$7
-if [ "$8" == "local" ]
+RELEASE_VERSION=$5
+if [ "$6" == "local" ]
 then
       USE_LOCAL=true
 else
@@ -20,7 +18,7 @@ rm -r $BUILDER_DIR || true
 rm -rf SteamContentBuilder*
 rm -rf WindowsNoEditor*
 
-wget --http-user=$ARTIFACTORY_USER --http-password=$ARTIFACTORY_PASSWORD https://artifactory.valhalla-game.com/artifactory/list/binary-release-local/SteamContentBuilder.zip
+wget https://valhalla-game.com/files/SteamContentBuilder.zip
 unzip SteamContentBuilder.zip
 
 chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
