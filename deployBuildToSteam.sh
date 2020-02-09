@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 BUILD_VERSION=$1
 STEAM_USER=$2
 STEAM_PASSWORD=$3
