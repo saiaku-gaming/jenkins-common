@@ -19,7 +19,7 @@ rm -rf WindowsNoEditor*
 
 if [ "$USE_LOCAL" = "true" ]; then
 	echo "NOTE: Skipping SteamContentBuilder refresh for maximum speed!"
-	rm $BUILDER_DIR/content/windows_content
+	rm -rf $BUILDER_DIR/content/windows_content
 	cp "/opt/binary-storage/valhalla-windows-client/WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip" .
 else
 	rm -r $BUILDER_DIR || true
