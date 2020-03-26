@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -x
+set -e
 
 BUILD_VERSION=$1
 STEAM_USER=$2
