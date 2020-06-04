@@ -60,7 +60,6 @@ files = {'file': open(f"{crashFolder}\\Diagnostics.txt")}
 crashId = metadata.get('id')
 response = requests.post(f'https://qa.valhalla-game.com/api/crash/{crashId}/diagnostics',
                          files=files,
-                         data=data,
                          allow_redirects=True,
                          auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN']))
 print(f"uploaded diag with response {response}")
