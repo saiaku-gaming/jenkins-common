@@ -52,7 +52,8 @@ code = popen.wait()
 
 if(code == 0):
 	files = {'file': open(f"{crashFolder}\\Diagnostics.txt")}
-	response = requests.post(f'https://qa.valhalla-game.com/api/crash/{metadata.get('id')}/diagnostics',
+    crashId = metadata.get('id')
+	response = requests.post(f'https://qa.valhalla-game.com/api/crash/{crashId}/diagnostics',
 						files=files,
 						data=data,
                         allow_redirects=True,
