@@ -5,7 +5,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
 
-crashId = 7
+crashId = sys.argv[1]
 user = 'jenkins'
 response = requests.get(f'https://qa.valhalla-game.com/crash/{crashId}',
                         allow_redirects=True,
@@ -17,7 +17,7 @@ gameBinariesFolder = f'WindowsNoEditor{metadata.get("crashInVersion")}'
 gameBinariesZip = f'{gameBinariesFolder}.zip'
 
 with requests.get(
-        f'https://qa.valhalla-game.com/crash/{crashId}/download',
+        f'https://qa.valhalla-game.com/api/crash/{crashId}/download',
         allow_redirects=True,
         stream=True,
         auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN'])) as r:
@@ -52,8 +52,7 @@ code = popen.wait()
 
 if(code == 0):
 	files = {'file': open(f"{crashFolder}\\Diagnostics.txt")}
-	data = {'id': metadata.get('id')}
-	response = requests.post(f'https://qa.valhalla-game.com/crash/{stacktrace}',
+	response = requests.post(f'https://qa.valhalla-game.com/api/crash/{metadata.get('id')}/diagnostics',
 						files=files,
 						data=data,
                         allow_redirects=True,
