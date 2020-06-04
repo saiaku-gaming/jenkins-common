@@ -47,14 +47,15 @@ with requests.get("https://github.com/saiaku-gaming/jenkins-common/raw/master/Mi
 symbolFolder = f"{os.path.abspath(gameBinariesFolder)}\\valhalla\\Binaries\\Win64"
 
 args = ("MinidumpDiagnostics.exe", f"{crashFolder}\\UE4Minidump.dmp")
-popen = subprocess.Popen(args, stdout=subprocess.PIPE, env={"_NT_SYMBOL_PATH": symbolFolder})
+popen = subprocess.Popen(args, stdout=subprocess.PIPE, env={
+                         "_NT_SYMBOL_PATH": symbolFolder})
 code = popen.wait()
 
 if(code == 0):
-	files = {'file': open(f"{crashFolder}\\Diagnostics.txt")}
+    files = {'file': open(f"{crashFolder}\\Diagnostics.txt")}
     crashId = metadata.get('id')
-	response = requests.post(f'https://qa.valhalla-game.com/api/crash/{crashId}/diagnostics',
-						files=files,
-						data=data,
-                        allow_redirects=True,
-                        auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN']))
+    response = requests.post(f'https://qa.valhalla-game.com/api/crash/{crashId}/diagnostics',
+                             files=files,
+                             data=data,
+                             allow_redirects=True,
+                             auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN']))
