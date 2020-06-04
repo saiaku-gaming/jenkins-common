@@ -8,7 +8,7 @@ from pathlib import Path
 
 crashId = sys.argv[1]
 user = 'jenkins'
-response = requests.get(f'https://qa.valhalla-game.com/crash/{crashId}',
+response = requests.get(f'https://qa.valhalla-game.com/api/crash/{crashId}',
                         allow_redirects=True,
                         auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN']))
 metadata = response.json()
