@@ -2,6 +2,7 @@ import os
 import zipfile
 import subprocess
 import requests
+import sys
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
 
