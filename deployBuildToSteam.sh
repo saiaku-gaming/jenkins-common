@@ -38,17 +38,21 @@ fi
 unzip WindowsNoEditor$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 
 APP_BUILD_NAME="dev-app_build_763550.vdf"
+DEPO_BUILD_NAME="dev-depot_build_763551.vdf"
 
 if [ "$RELEASE_VERSION" = "Development" ]; then
 	APP_BUILD_NAME="dev-app_build_763550.vdf"
+	DEPO_BUILD_NAME="dev-depot_build_763551.vdf"
 elif [ "$RELEASE_VERSION" = "DebugGame" ]; then
 	APP_BUILD_NAME="dev-app_build_763550.vdf"
+	DEPO_BUILD_NAME="dev-depot_build_763551.vdf"
 elif [ "$RELEASE_VERSION" = "Shipping" ]; then
 	APP_BUILD_NAME="prod-app_build_763550.vdf"
+	DEPO_BUILD_NAME="prod-depot_build_763551.vdf"
 fi
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$APP_BUILD_NAME > $BUILDER_DIR/scripts/app_build_763550.vdf
-curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/depot_build_763551.vdf > $BUILDER_DIR/scripts/depot_build_763551.vdf
+curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$DEPO_BUILD_NAME > $BUILDER_DIR/scripts/depot_build_763551.vdf
 
 sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_763550.vdf
 
