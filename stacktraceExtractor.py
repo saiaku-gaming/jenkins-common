@@ -20,37 +20,37 @@ gameBinariesZip = f'{gameBinariesFolder}.zip'
 print(f"got metadata {metadata}")
 
 print(f"Downloading crash")
-# with requests.get(
-#         f'https://qa.valhalla-game.com/api/crash/{crashId}/download',
-#         allow_redirects=True,
-#         stream=True,
-#         auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN'])) as r:
-#     with open(crashFolderZip, 'wb') as f:
-#         for chunk in r:
-#             f.write(chunk)
+with requests.get(
+        f'https://qa.valhalla-game.com/api/crash/{crashId}/download',
+        allow_redirects=True,
+        stream=True,
+        auth=HTTPBasicAuth(user, os.environ['JENKINS_API_TOKEN'])) as r:
+    with open(crashFolderZip, 'wb') as f:
+        for chunk in r:
+            f.write(chunk)
 
 print(f"Downloading game binaries")
 gameUrl = f'http://gungnir.teamsamst.com:8899/storage?path=valhalla-windows-client&name={gameBinariesZip}'
-# with requests.get(gameUrl, allow_redirects=True, stream=True, headers={'Authorization': binaryStorageSecret}) as r:
-#     with open(gameBinariesZip, 'wb') as f:
-#         for chunk in r:
-#             f.write(chunk)
+with requests.get(gameUrl, allow_redirects=True, stream=True, headers={'Authorization': binaryStorageSecret}) as r:
+    with open(gameBinariesZip, 'wb') as f:
+        for chunk in r:
+            f.write(chunk)
 
-# print(f"Extracting game binaries")
-# with zipfile.ZipFile(gameBinariesZip, 'r') as zip_ref:
-#     zip_ref.extractall(gameBinariesFolder)
+print(f"Extracting game binaries")
+with zipfile.ZipFile(gameBinariesZip, 'r') as zip_ref:
+    zip_ref.extractall(gameBinariesFolder)
 
 print(f"Extracting crash")
 crashFolder = f"{os.path.abspath(gameBinariesFolder)}\\valhalla\\Saved\\Crashes\\{Path(crashFolderZip).stem}"
-# with zipfile.ZipFile(crashFolderZip, 'r') as zip_ref:
-#     zip_ref.extractall(crashFolder)
+with zipfile.ZipFile(crashFolderZip, 'r') as zip_ref:
+    zip_ref.extractall(crashFolder)
 
 print(f"Getting diagostics tool")
-# with requests.get("https://github.com/saiaku-gaming/jenkins-common/raw/master/MinidumpDiagnostics.exe",
-#                   stream=True) as r:
-#     with open("MinidumpDiagnostics.exe", 'wb') as f:
-#         for chunk in r:
-#             f.write(chunk)
+with requests.get("https://github.com/saiaku-gaming/jenkins-common/raw/master/MinidumpDiagnostics.exe",
+                  stream=True) as r:
+    with open("MinidumpDiagnostics.exe", 'wb') as f:
+        for chunk in r:
+            f.write(chunk)
 
 symbolFolder = f"{os.path.abspath(gameBinariesFolder)}\\valhalla\\Binaries\\Win64"
 print(f"Symbol folder {symbolFolder}")
