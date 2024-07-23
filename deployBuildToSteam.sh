@@ -11,6 +11,7 @@ RELEASE_VERSION=$5
 CLIENT_NAME=$6
 APP_ID=$7
 DEPOT_ID=$8
+
 if [ "$9" = "local" ]; then
       USE_LOCAL=true
 else
@@ -53,6 +54,9 @@ elif [ "$RELEASE_VERSION" = "DebugGame" ]; then
 elif [ "$RELEASE_VERSION" = "Shipping" ]; then
 	APP_BUILD_NAME="prod-app_build_$APP_ID.vdf"
 	DEPO_BUILD_NAME="prod-depot_build_$DEPOT_ID.vdf"
+elif [ "$RELEASE_VERSION" = "Playtest" ]; then
+	APP_BUILD_NAME="playtest-app_build_$APP_ID.vdf"
+	DEPO_BUILD_NAME="playtest-depot_build_$DEPOT_ID.vdf"
 fi
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$APP_BUILD_NAME > $BUILDER_DIR/scripts/app_build_$APP_ID.vdf
