@@ -7,10 +7,16 @@ BUILD_VERSION=$1
 STEAM_USER=$2
 STEAM_PASSWORD=$3
 STORAGE_SERVER_SECRET=$4
-RELEASE_VERSION=$5
+RELEASE_TYPE=$5
 CLIENT_NAME=$6
 APP_ID=$7
 DEPOT_ID=$8
+
+if ["$RELEASE_TYPE" = "Playtest"]; then
+			RELEASE_VERSION="Shipping"
+else
+			RELEASE_VERSION="$RELEASE_TYPE"
+fi
 
 if [ "$9" = "local" ]; then
       USE_LOCAL=true
@@ -45,16 +51,16 @@ unzip Windows$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_
 APP_BUILD_NAME="dev-app_build_$APP_ID.vdf"
 DEPO_BUILD_NAME="dev-depot_build_$DEPOT_ID.vdf"
 
-if [ "$RELEASE_VERSION" = "Development" ]; then
+if [ "$RELEASE_TYPE" = "Development" ]; then
 	APP_BUILD_NAME="dev-app_build_$APP_ID.vdf"
 	DEPO_BUILD_NAME="dev-depot_build_$DEPOT_ID.vdf"
-elif [ "$RELEASE_VERSION" = "DebugGame" ]; then
+elif [ "$RELEASE_TYPE" = "DebugGame" ]; then
 	APP_BUILD_NAME="dev-app_build_$APP_ID.vdf"
 	DEPO_BUILD_NAME="dev-depot_build_$DEPOT_ID.vdf"
-elif [ "$RELEASE_VERSION" = "Shipping" ]; then
+elif [ "$RELEASE_TYPE" = "Shipping" ]; then
 	APP_BUILD_NAME="prod-app_build_$APP_ID.vdf"
 	DEPO_BUILD_NAME="prod-depot_build_$DEPOT_ID.vdf"
-elif [ "$RELEASE_VERSION" = "Playtest" ]; then
+elif [ "$RELEASE_TYPE" = "Playtest" ]; then
 	APP_BUILD_NAME="playtest-app_build_$APP_ID.vdf"
 	DEPO_BUILD_NAME="playtest-depot_build_$DEPOT_ID.vdf"
 fi
