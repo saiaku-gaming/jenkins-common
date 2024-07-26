@@ -12,7 +12,7 @@ CLIENT_NAME=$6
 APP_ID=$7
 DEPOT_ID=$8
 
-if ["$RELEASE_TYPE" = "Playtest"]; then
+if [ "$RELEASE_TYPE" = "Playtest" ]; then
 			RELEASE_VERSION="Shipping"
 else
 			RELEASE_VERSION="$RELEASE_TYPE"
