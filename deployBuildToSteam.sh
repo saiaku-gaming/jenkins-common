@@ -47,7 +47,7 @@ fi
 
 unzip Windows$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 
-sed -i "s/SteamDevAppId=480/SteamDevAppId=$APP_ID/g" $BUILDER_DIR/content/windows_content/cyberhunt/config/DefaultEngine.ini
+sed -i "s/SteamDevAppId=480/SteamDevAppId=$APP_ID/g" $BUILDER_DIR/content/windows_content/cyberhunt/Config/DefaultEngine.ini
 
 APP_BUILD_NAME="dev-app_build_$APP_ID.vdf"
 DEPO_BUILD_NAME="dev-depot_build_$DEPOT_ID.vdf"
