@@ -40,12 +40,11 @@ fi
 ZIP_PATH="/opt/binary-storage/$CLIENT_NAME/Windows$BUILD_VERSION$RELEASE_VERSION.zip"
 
 if [ -f $ZIP_PATH ]; then
-	cp $ZIP_PATH .
+	unzip $ZIP_PATH -d $BUILDER_DIR/content/windows_content
 else 
 	curl -sS -H "Authorization: $STORAGE_SERVER_SECRET" "https://binary-storage.valhalla-game.com/storage?path=$CLIENT_NAME&name=Windows$BUILD_VERSION$RELEASE_VERSION.zip" --output "Windows$BUILD_VERSION$RELEASE_VERSION.zip"
+	unzip Windows$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 fi
-
-unzip Windows$BUILD_VERSION$RELEASE_VERSION.zip -d $BUILDER_DIR/content/windows_content
 
 sed -i "s/SteamDevAppId=480/SteamDevAppId=$APP_ID/g" $BUILDER_DIR/content/windows_content/cyberhunt/Config/DefaultEngine.ini
 
