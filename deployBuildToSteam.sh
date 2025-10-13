@@ -13,27 +13,20 @@ APP_ID=$7
 DEPOT_ID=$8
 
 if [ "$RELEASE_TYPE" = "Playtest" ]; then
-			RELEASE_VERSION="Shipping"
+	RELEASE_VERSION="Shipping"
 else
-			RELEASE_VERSION="$RELEASE_TYPE"
-fi
-
-if [ "$9" = "local" ]; then
-      USE_LOCAL=true
-else
-      USE_LOCAL=false
+	RELEASE_VERSION="$RELEASE_TYPE"
 fi
 
 BUILDER_DIR=SteamContentBuilder
 
+# Remove previous zip file
 rm -rf Windows*
 
-if [ "$USE_LOCAL" = "true" ]; then
+if [ -d "$BUILDER_DIR" ]; then
 	echo "NOTE: Skipping SteamContentBuilder refresh for maximum speed!"
 	rm -rf $BUILDER_DIR/content/windows_content
-	cp "/opt/binary-storage/$CLIENT_NAME/Windows$BUILD_VERSION$RELEASE_VERSION.zip" .
 else
-	rm -r $BUILDER_DIR || true
 	rm SteamContentBuilder.zip || true
 
 	wget https://valhalla-game.com/files/SteamContentBuilder.zip
@@ -42,6 +35,13 @@ else
 	chmod +x $BUILDER_DIR/builder_linux/linux32/steamcmd
 	chmod +x $BUILDER_DIR/builder_linux/steamcmd.sh
 
+fi
+
+ZIP_PATH="/opt/binary-storage/$CLIENT_NAME/Windows$BUILD_VERSION$RELEASE_VERSION.zip"
+
+if [ -f $ZIP_PATH ]; then
+	cp $ZIP_PATH .
+else 
 	curl -sS -H "Authorization: $STORAGE_SERVER_SECRET" "https://binary-storage.valhalla-game.com/storage?path=$CLIENT_NAME&name=Windows$BUILD_VERSION$RELEASE_VERSION.zip" --output "Windows$BUILD_VERSION$RELEASE_VERSION.zip"
 fi
 
@@ -70,11 +70,6 @@ curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$APP_
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$DEPO_BUILD_NAME > $BUILDER_DIR/scripts/depot_build_$DEPOT_ID.vdf
 
 sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_$APP_ID.vdf
-
-if [ "$USE_LOCAL" = "true" ]; then
-	sed -i 's,"setlive" "development","setlive" "local",g' $BUILDER_DIR/scripts/app_build_$APP_ID.vdf
-	sed -i 's,"local" "","local" "/opt/steam-content",g' $BUILDER_DIR/scripts/app_build_$APP_ID.vdf
-fi
 
 #If below does not work, try installing support for 32-bit os.
 #sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
