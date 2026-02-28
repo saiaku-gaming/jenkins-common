@@ -12,7 +12,7 @@ CLIENT_NAME=$6
 APP_ID=$7
 DEPOT_ID=$8
 
-if [ "$RELEASE_TYPE" = "Playtest" ]; then
+if [ "$RELEASE_TYPE" = "Playtest" ] || [ "$RELEASE_TYPE" = "Demo" ]; then
 	RELEASE_VERSION="Shipping"
 else
 	RELEASE_VERSION="$RELEASE_TYPE"
@@ -63,6 +63,9 @@ elif [ "$RELEASE_TYPE" = "Shipping" ]; then
 elif [ "$RELEASE_TYPE" = "Playtest" ]; then
 	APP_BUILD_NAME="playtest-app_build_$APP_ID.vdf"
 	DEPO_BUILD_NAME="playtest-depot_build_$DEPOT_ID.vdf"
+elif [ "$RELEASE_TYPE" = "Demo" ]; then
+	APP_BUILD_NAME="demo-app_build_$APP_ID.vdf"
+	DEPO_BUILD_NAME="demo-depot_build_$DEPOT_ID.vdf"
 fi
 
 curl https://raw.githubusercontent.com/saiaku-gaming/jenkins-common/master/$APP_BUILD_NAME > $BUILDER_DIR/scripts/app_build_$APP_ID.vdf
