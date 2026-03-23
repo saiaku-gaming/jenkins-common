@@ -12,4 +12,5 @@
 	{
 		"1716711" "depot_build_1716711.vdf"
 	}
+	"FileExclusion" "steam_appid.txt"
 }

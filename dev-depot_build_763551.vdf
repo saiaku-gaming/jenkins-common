@@ -24,4 +24,5 @@
     // be included.
     "recursive" "1"
   }
+  "FileExclusion" "steam_appid.txt"
 }
