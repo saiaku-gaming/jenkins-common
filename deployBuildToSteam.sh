@@ -76,4 +76,4 @@ sed -i "s/\$BUILD_VERSION/$BUILD_VERSION/g" $BUILDER_DIR/scripts/app_build_$APP_
 #If below does not work, try installing support for 32-bit os.
 #sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
 
-/bin/bash $BUILDER_DIR/builder_linux/steamcmd.sh +login $STEAM_USER $STEAM_PASSWORD +run_app_build $(pwd)/$BUILDER_DIR/scripts/app_build_$APP_ID.vdf +quit
+/bin/bash $BUILDER_DIR/builder_linux/steamcmd.sh +login $STEAM_USER $STEAM_PASSWORD $(steamguard code) +run_app_build $(pwd)/$BUILDER_DIR/scripts/app_build_$APP_ID.vdf +quit
